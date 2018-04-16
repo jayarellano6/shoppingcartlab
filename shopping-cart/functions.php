@@ -6,9 +6,9 @@
             echo "<table class='table'>";
             foreach($items as $item){
                 $itemName = $item['name'];
-                $itemPrice = $item['salePrice'];
-                $itemImage = $item['thumbnailImage'];
-                $itemId = $item['itemId'];
+                $itemPrice = $item['price'];
+                $itemImage = $item['image_url'];
+                $itemId = $item['item_id'];
                 
                 //display table row
                 echo "<tr>";
@@ -24,7 +24,7 @@
                 echo "<input type='hidden' name='itemPrice' value='$itemPrice'>";
                 
                 
-                if($_POST['itemId'] == $itemId){
+                if(isset($POST['itemId']) && $_POST['itemId'] == $itemId){
                     echo '<td><button class="btn btn-success">Added</button></td>';
                 }
                 else{

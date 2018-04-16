@@ -1,7 +1,7 @@
 <?php
     // include "scart.php";
     session_start();
-    
+    include 'database.php';
     if(!isset($_SESSION['cart'])){
         $_SESSION['cart'] = array();
     }
@@ -27,13 +27,12 @@
         }
         
     }
+
     
     include 'functions.php';
-    if(isset($_GET['query'])){
-        include 'wmapi.php';
-        $items = getProducts($_GET['query']);
-        // print_r($items);
-    }
+
+
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -71,8 +70,22 @@
                 <div class="form-group">
                     <label for="pName">Product Name</label>
                     <input type="text" class="form-control" name="query" id="pName" placeholder="Name">
+                    <label for="category">category</label>
+                    <select name="category">
+                        <?php echo getCategoriesHTML(); ?>
+                    </select>
+                    <br/>
+                    Price:  
+                    From: <input type="text" name="price-from" />
+                    To: <input type="text" name="price-to" />
+                    <br/>
+                    Order Results by: 
+                    <input type="radio" name="ordering" value="product"> Product 
+                    <input type="radio" name="ordering" value="price"> Price
+                    <br/>
+                    <input name="show-images" type="checkbox"> Display images
                 </div>
-                <input type="submit" value="Submit" class="btn btn-default">
+                <input type="submit" name="search-submitted" value="Submit" class="btn btn-default">
                 <br /><br />
             </form>
             
@@ -80,8 +93,63 @@
             
             
             <?php
+                // insertItemsIntoDB($items);
+                if(isset($_GET['query'])){
+                    $query = $_GET['query'];
+                    // include 'wmapi.php';
+                    // $items = getProducts($_GET['query']);
+                    // print_r($items);
+                    // $items = getMatchingItems($_GET['query']);
+                }
+                else{
+                    $query = "";
+                }
+                if (isset($_GET["category"]) && !empty($_GET["category"])) {
+                    $category = $_GET["category"]; 
+                }
+                else{
+                    $category = "";
+                }
+                if (isset($_GET["price-from"]) && !empty($_GET["price-from"])) {
+                    $priceFrom =  $_GET["price-from"]; 
+                }
+                else{
+                    $priceFrom = "";
+                }
+                if (isset($_GET["price-to"]) && !empty($_GET["price-to"])) {
+                    $priceTo = $_GET["price-to"];
+                }
+                else{
+                    $priceTo = "";
+                }
+                if (isset($_GET["ordering"]) && !empty($_GET["ordering"])) {
+                    $ordering = $_GET["ordering"];
+                }
+                else{
+                    $ordering = "";
+                }
+                if (isset($_GET["show-images"]) && !empty($_GET["show-images"])) {
+                    $showImages = $_GET["show-images"];
+                }
+                else{
+                    $showImages = "";
+                }
+
+                echo "query: $query <br/>"; 
+                echo "category: $category <br/>"; 
+                echo "priceFrom: $priceFrom <br/>"; 
+                echo "priceTo: $priceTo <br/>"; 
+                echo "ordering: $ordering <br/>"; 
+                echo "showImages: $showImages <br/>"; 
+
+                if(isset($_GET['search-submitted'])){
+                    //form was sumbitted
+                    $items = getMatchingItems($_GET['query'], $category, $priceFrom, $priceTo, $ordering, $showImages);
+                }
+                
                 displayResults();
             ?>
+            
             
         </div>
     </div>
